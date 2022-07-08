@@ -16,14 +16,17 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 import Header from "./components/Header";
 import InputBox from "./components/InputBox";
 
+import Modal from "./components/Modal";
+import useModal from "./components/useModal";
 export default function App() {
+  const { toggle, visible } = useModal();
   const [box, setBox] = useState([]);
-  const [height, setHeight] = useState('');
-  const [width, setWidth] = useState('');
-  const [length, setLength] = useState('');
-  const [positionX, setPositionX] = useState('');
-  const [positionY, setPositionY] = useState('');
-  const [positionZ, setPositionZ] = useState('');
+  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState("");
+  const [length, setLength] = useState("");
+  const [positionX, setPositionX] = useState("");
+  const [positionY, setPositionY] = useState("");
+  const [positionZ, setPositionZ] = useState("");
   const positionXInput = (e) => {
     setPositionX(e.target.value);
   };
@@ -45,15 +48,13 @@ export default function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    addBox(
-      Number(height, width, length, positionX, positionY, positionZ)
-  );
-    setHeight('');
-    setWidth('');
-    setLength('');
-    setPositionX('');
-    setPositionY('');
-    setPositionZ('');
+    addBox(Number(height, width, length, positionX, positionY, positionZ));
+    setHeight("");
+    setWidth("");
+    setLength("");
+    setPositionX("");
+    setPositionY("");
+    setPositionZ("");
   };
 
   const NewBox = (props) => {
@@ -65,7 +66,10 @@ export default function App() {
 
     return (
       <mesh {...props}>
-        <boxBufferGeometry attach="geometry" args={[Number(height), Number(width) , Number(length)]} />
+        <boxBufferGeometry
+          attach="geometry"
+          args={[Number(height), Number(width), Number(length)]}
+        />
         <meshStandardMaterial
           map={colorMap}
           normalMap={normalMap}
@@ -81,7 +85,7 @@ export default function App() {
       ...box,
       <NewBox
         key={boxCount}
-        position={[positionX, positionY-0.5, positionZ]}
+        position={[positionX, positionY - 0.5, positionZ]}
         dimension={[height, width, length]}
       />,
     ]);
@@ -90,6 +94,7 @@ export default function App() {
   return (
     <div className="App">
       <Header />
+
       <div className="Canvas">
         <Canvas style={{ background: "#2B2E33" }}>
           <Suspense fallback={null}>
@@ -104,8 +109,32 @@ export default function App() {
         </Canvas>
       </div>
       <div className="Footer">
+        <IconButton
+          display={{ base: "block", md: "none" }}
+          colorScheme="blue"
+          onClick={toggle}
+          icon={<AddIcon />}
+        />
+        <Modal
+          visible={visible}
+          toggle={toggle}
+          handleSubmit={handleSubmit}
+          height={height}
+          heightInput={heightInput}
+          width={width}
+          widthInput={widthInput}
+          length={length}
+          lengthInput={lengthInput}
+          positionX={positionX}
+          positionXInput={positionXInput}
+          positionY={positionY}
+          positionYInput={positionYInput}
+          positionZ={positionZ}
+          positionZInput={positionZInput}
+        />
         <form onSubmit={handleSubmit}>
           <Box
+            display={{ base: "none", md: "block" }}
             width="400px"
             borderWidth="2px"
             borderColor="gray.400"
