@@ -7,6 +7,7 @@ import {
   FormLabel,
   SimpleGrid,
   GridItem,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState, Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
@@ -19,6 +20,7 @@ import InputBox from "./components/InputBox";
 import Modal from "./components/Modal";
 import useModal from "./components/useModal";
 export default function App() {
+  const toast = useToast();
   const { toggle, visible } = useModal();
   const [box, setBox] = useState([]);
   const [height, setHeight] = useState("");
@@ -46,6 +48,14 @@ export default function App() {
     setLength(e.target.value);
   };
   const handleSubmit = (e) => {
+    toast({
+      title: "Success",
+      description: "Box added to canvas.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+
     e.preventDefault();
 
     addBox(Number(height, width, length, positionX, positionY, positionZ));
@@ -96,7 +106,10 @@ export default function App() {
       <Header />
 
       <div className="Canvas">
-        <Canvas style={{ background: "#2B2E33" }}>
+        <Canvas
+          style={{ background: "#2B2E33" }}
+          camera={{ position: [10, 10, 10] }}
+        >
           <Suspense fallback={null}>
             <gridHelper args={[20, 20]} />
             <OrbitControls />
@@ -116,6 +129,7 @@ export default function App() {
           icon={<AddIcon />}
         />
         <Modal
+          display={{ base: "block", md: "none" }}
           visible={visible}
           toggle={toggle}
           handleSubmit={handleSubmit}
